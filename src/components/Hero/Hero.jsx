@@ -6,6 +6,21 @@ import { fadeUp } from "@/hooks/useAnimation";
 import ParticleBackground from "@/components/ParticleBackground/ParticleBackground";
 import "./Hero.css";
 
+const heroHighlights = [
+  {
+    label: "Focus",
+    value: "Secure software, AI workflows, and cybersecurity tooling.",
+  },
+  {
+    label: "Stack",
+    value: "FastAPI, Flutter, PostgreSQL, Python, and Linux-based tooling.",
+  },
+  {
+    label: "Status",
+    value: "Open to professional opportunities and project collaborations.",
+  },
+];
+
 export default function Hero() {
   return (
     <section id="home" className="hero-section">
@@ -24,6 +39,16 @@ export default function Hero() {
               <span className="dot ai"></span>
               <span className="dot sec"></span> Portfolio — Software / AI /
               Security
+            </motion.div>
+
+            <motion.div
+              variants={fadeUp}
+              initial="hidden"
+              animate="show"
+              custom={0.1}
+              className="hero-badge"
+            >
+              Based in {SITE.location} · Building practical products with a security-first mindset
             </motion.div>
 
             <motion.h1
@@ -64,6 +89,21 @@ export default function Hero() {
               {SITE.tagline}
             </motion.p>
 
+            <motion.ul
+              variants={fadeUp}
+              initial="hidden"
+              animate="show"
+              custom={0.48}
+              className="hero-highlights"
+            >
+              {heroHighlights.map((item) => (
+                <li key={item.label} className="hero-highlight-card">
+                  <span className="hero-highlight-label">{item.label}</span>
+                  <span className="hero-highlight-value">{item.value}</span>
+                </li>
+              ))}
+            </motion.ul>
+
             <motion.div
               variants={fadeUp}
               initial="hidden"
@@ -72,10 +112,10 @@ export default function Hero() {
               className="flex flex-wrap gap-3 mb-9"
             >
               <a href="#resume" className="btn btn-primary">
-                View resume (PDF)
+                Download CV
               </a>
               <a href="#contact" className="btn btn-ghost">
-                Contact me
+                Let&apos;s talk
               </a>
             </motion.div>
 

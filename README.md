@@ -3,6 +3,11 @@
 A Next.js + Tailwind CSS + Framer Motion + Three.js portfolio spanning three
 domains: Software Engineering, AI, and Cybersecurity.
 
+## Live demo
+
+- Public website: https://portfolio-pi-ivory-95.vercel.app/
+- GitHub repo: https://github.com/Shoaib1515/portfolio
+
 ## Stack
 
 - **Next.js 16** (App Router)

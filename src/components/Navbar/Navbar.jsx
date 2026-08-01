@@ -51,7 +51,7 @@ export default function Navbar() {
         <div className="navbar-right">
           <ThemeToggle />
           <a href="#contact" className="navbar-cta">
-            Contact
+            Let&apos;s talk
           </a>
           <button
             type="button"
