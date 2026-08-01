@@ -1,0 +1,36 @@
+<svg width="1200" height="800" viewBox="0 0 1200 800" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <linearGradient id="g1" x1="80" y1="40" x2="1120" y2="760" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#0F172A"/>
+      <stop offset="0.55" stop-color="#08111F"/>
+      <stop offset="1" stop-color="#020617"/>
+    </linearGradient>
+    <linearGradient id="g2" x1="170" y1="110" x2="1020" y2="710" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#22D3EE" stop-opacity="0.26"/>
+      <stop offset="0.5" stop-color="#F59E0B" stop-opacity="0.18"/>
+      <stop offset="1" stop-color="#E879F9" stop-opacity="0.16"/>
+    </linearGradient>
+  </defs>
+  <rect width="1200" height="800" rx="42" fill="url(#g1)"/>
+  <rect x="42" y="42" width="1116" height="716" rx="34" stroke="rgba(255,255,255,0.16)" stroke-width="2"/>
+  <circle cx="1020" cy="120" r="160" fill="#22D3EE" fill-opacity="0.10"/>
+  <circle cx="180" cy="690" r="210" fill="#F59E0B" fill-opacity="0.08"/>
+  <path d="M110 180C290 70 470 50 650 110C810 164 930 166 1090 110" stroke="url(#g2)" stroke-width="2" stroke-linecap="round"/>
+  <rect x="110" y="132" width="980" height="536" rx="30" fill="rgba(255,255,255,0.03)" stroke="rgba(255,255,255,0.12)"/>
+  <rect x="146" y="166" width="120" height="44" rx="22" fill="rgba(34,211,238,0.14)"/>
+  <text x="166" y="195" fill="#22D3EE" font-family="Inter, Arial, sans-serif" font-size="20" font-weight="700">Cisco Networking Academy</text>
+  <text x="146" y="282" fill="#E5E7EB" font-family="Space Grotesk, Inter, Arial, sans-serif" font-size="58" font-weight="700">Introduction to Cybersecurity</text>
+  <text x="146" y="338" fill="#B8C2D4" font-family="Inter, Arial, sans-serif" font-size="24">Security fundamentals, safe practices, and threat awareness</text>
+  <rect x="146" y="402" width="340" height="122" rx="22" fill="rgba(255,255,255,0.04)" stroke="rgba(255,255,255,0.10)"/>
+  <text x="174" y="450" fill="#94A3B8" font-family="JetBrains Mono, Consolas, monospace" font-size="16">Credential ID</text>
+  <text x="174" y="486" fill="#F8FAFC" font-family="JetBrains Mono, Consolas, monospace" font-size="24">002db037-159c-471d-bf6b-ddc3fb695c90</text>
+  <rect x="536" y="402" width="260" height="122" rx="22" fill="rgba(255,255,255,0.04)" stroke="rgba(255,255,255,0.10)"/>
+  <text x="564" y="450" fill="#94A3B8" font-family="JetBrains Mono, Consolas, monospace" font-size="16">Completed</text>
+  <text x="564" y="486" fill="#F8FAFC" font-family="JetBrains Mono, Consolas, monospace" font-size="24">22 Jul 2026</text>
+  <rect x="824" y="402" width="232" height="122" rx="22" fill="rgba(255,255,255,0.04)" stroke="rgba(255,255,255,0.10)"/>
+  <text x="852" y="450" fill="#94A3B8" font-family="JetBrains Mono, Consolas, monospace" font-size="16">Category</text>
+  <text x="852" y="486" fill="#F8FAFC" font-family="JetBrains Mono, Consolas, monospace" font-size="24">Cybersecurity</text>
+  <text x="146" y="578" fill="#CBD5E1" font-family="Inter, Arial, sans-serif" font-size="18">Portfolio proof asset</text>
+  <circle cx="1026" cy="560" r="76" fill="none" stroke="#22D3EE" stroke-opacity="0.35" stroke-width="18"/>
+  <circle cx="1026" cy="560" r="38" fill="#22D3EE" fill-opacity="0.16"/>
+</svg>
