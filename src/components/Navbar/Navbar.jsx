@@ -1,5 +1,6 @@
 "use client";
 
+import Image from "next/image";
 import { useEffect, useState } from "react";
 import { NAV_LINKS, SITE } from "@/lib/constants";
 import { useActiveSection } from "@/hooks/useScroll";
@@ -29,9 +30,15 @@ export default function Navbar() {
     <header className="navbar-header">
       <nav className="navbar-nav" aria-label="Primary navigation">
         <a href="#home" className="navbar-brand">
-          <span className="navbar-brand-mark">MSA</span>
-          <span className="navbar-brand-name-full">{SITE.name}</span>
-          <span className="navbar-brand-name-compact">Shoaib Asghar</span>
+          <Image
+            src="/images/profile.webp"
+            alt={SITE.name}
+            width={36}
+            height={36}
+            className="navbar-avatar"
+            priority
+          />
+          <span className="navbar-brand-name">M. Shoaib Asghar</span>
         </a>
 
         <ul id="site-navigation" className={`navbar-links ${open ? "open" : ""}`}>
