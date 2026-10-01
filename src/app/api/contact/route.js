@@ -1,6 +1,8 @@
 import { NextResponse } from "next/server";
 import nodemailer from "nodemailer";
 
+export const runtime = "nodejs";
+
 function isValidEmail(email) {
     return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
 }
@@ -38,7 +40,16 @@ export async function POST(request) {
             CONTACT_FROM_EMAIL,
         } = process.env;
 
-        if (!SMTP_HOST || !SMTP_PORT || !SMTP_USER || !SMTP_PASS || !CONTACT_TO_EMAIL) {
+        const smtpPort = Number(SMTP_PORT);
+
+        if (
+            !SMTP_HOST ||
+            !SMTP_PORT ||
+            !Number.isInteger(smtpPort) ||
+            !SMTP_USER ||
+            !SMTP_PASS ||
+            !CONTACT_TO_EMAIL
+        ) {
             return NextResponse.json(
                 { error: "Email service is not configured on the server." },
                 { status: 500 }
@@ -47,8 +58,8 @@ export async function POST(request) {
 
         const transporter = nodemailer.createTransport({
             host: SMTP_HOST,
-            port: Number(SMTP_PORT),
-            secure: Number(SMTP_PORT) === 465,
+            port: smtpPort,
+            secure: smtpPort === 465,
             auth: {
                 user: SMTP_USER,
                 pass: SMTP_PASS,
@@ -77,7 +88,11 @@ export async function POST(request) {
         });
 
         return NextResponse.json({ ok: true });
-    } catch {
+    } catch (error) {
+        console.error("Contact form email failed:", {
+            code: error?.code,
+            message: error?.message,
+        });
         return NextResponse.json({ error: "Failed to send message." }, { status: 500 });
     }
 }
