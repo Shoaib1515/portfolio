@@ -5,7 +5,6 @@ export const SITE = {
   tagline:
     "I build practical applications, thoughtful APIs, and AI-powered security tools.",
   location: "Pakistan",
-  phone: "+923186540421",
   email: "shoaibasghar1515@gmail.com",
   socials: {
     github: "https://github.com/Shoaib1515",

@@ -80,21 +80,6 @@ export default function Skills() {
               { title: "Working together", items: softSkills },
             ].map((group) => (
               <div key={group.title}>
-                <div className="skill-group-top">
-                  <span
-                    className={`skill-symbol symbol-${group.id}`}
-                    aria-hidden="true"
-                  >
-                    {group.id === "software"
-                      ? "</>"
-                      : group.id === "ai"
-                        ? "✧"
-                        : "◇"}
-                  </span>
-                  <span className="mono small muted">
-                    0{groups.indexOf(group) + 1}
-                  </span>
-                </div>
                 <h3>{group.title}</h3>
                 <ul>
                   {group.items.map((item) => (

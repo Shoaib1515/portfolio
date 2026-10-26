@@ -158,7 +158,9 @@ h3 {
 .btn-ghost {
   color: var(--text);
   border: 1px solid var(--border-strong);
-  background: var(--glass);
+  background: var(--glass-surface);
+  box-shadow: var(--glass-shadow);
+  -webkit-backdrop-filter: blur(12px);
   backdrop-filter: blur(12px);
 }
 .btn-ghost:hover {
@@ -290,7 +292,7 @@ a:hover {
   padding: 0;
 }
 .tag-list li {
-  font-size: 11px;
+  font-size: 12px;
   padding: 5px 9px;
   border: 1px solid var(--border);
   border-radius: 5px;
@@ -324,7 +326,16 @@ summary {
   align-items: center;
   min-height: 44px;
   font-size: 13px;
+  font-weight: 600;
   color: var(--accent);
+  padding: 10px 14px;
+  border: 1px solid var(--border-strong);
+  border-radius: 8px;
+  background: var(--bg);
+}
+.project-links a:hover {
+  border-color: var(--accent);
+  background: var(--bg-elev-2);
 }
 .projects-more {
   display: flex;
@@ -572,6 +583,23 @@ summary {
 .footer-links a {
   padding: 12px 0;
 }
+.project-card,
+.education-panel,
+.skill-group,
+.credential,
+.resume-link,
+.experience-row {
+  background: var(--glass-surface);
+  border-color: var(--glass-border);
+  box-shadow: var(--glass-shadow);
+  -webkit-backdrop-filter: blur(12px) saturate(125%);
+  backdrop-filter: blur(12px) saturate(125%);
+}
+.contact-field input,
+.contact-field textarea {
+  background: var(--glass-surface);
+  box-shadow: inset 0 1px 0 var(--glass-highlight);
+}
 @media (max-width: 1000px) {
   .project-grid {
     grid-template-columns: repeat(2, minmax(0, 1fr));
@@ -782,9 +810,12 @@ summary {
 .contact-form {
   padding: 28px;
   border: 1px solid var(--border-strong);
-  background: var(--glass);
+  background: var(--glass-surface);
+  border-color: var(--glass-border);
   border-radius: 20px;
-  box-shadow: 0 16px 64px #0001;
+  box-shadow: var(--glass-shadow);
+  -webkit-backdrop-filter: blur(12px) saturate(125%);
+  backdrop-filter: blur(12px) saturate(125%);
 }
 #contact {
   background:

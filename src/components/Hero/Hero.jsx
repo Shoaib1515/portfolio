@@ -1,4 +1,5 @@
 import Image from "next/image";
+import HeroCharacter from "./HeroCharacter";
 import { SITE } from "@/lib/constants";
 import { projects } from "@/data/projects";
 import "./Hero.css";
@@ -68,33 +69,60 @@ export default function Hero() {
             </div>
           </div>
           <div className="hero-visual">
-            <div className="orbit-grid" aria-hidden="true" />
-            <Image
-              className="hero-orbit"
-              src="/images/hero-orbit.webp"
-              alt=""
-              width={1024}
-              height={1024}
-              sizes="(max-width: 760px) 90vw, 45vw"
-              priority
-            />
-            <a className="orbit-label orbit-label-software" href="#software">
+            <HeroCharacter />
+            <a
+              className="orbit-label orbit-label-software"
+              href="#software"
+              aria-label="View Software engineering skills"
+            >
               <span className="orbit-label-icon" aria-hidden="true">
                 &lt;/&gt;
               </span>
               <span>
                 <small>BUILD</small>Software engineering
               </span>
+              <svg
+                className="orbit-link-arrow"
+                width="14"
+                height="14"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                strokeWidth="1.5"
+                aria-hidden="true"
+              >
+                <path d="m9 5 7 7-7 7" />
+              </svg>
             </a>
-            <a className="orbit-label orbit-label-ai" href="#ai">
+            <a
+              className="orbit-label orbit-label-ai"
+              href="#ai"
+              aria-label="View Applied AI skills"
+            >
               <span className="orbit-label-icon" aria-hidden="true">
                 ✧
               </span>
               <span>
                 <small>INTELLIGENCE</small>Applied AI
               </span>
+              <svg
+                className="orbit-link-arrow"
+                width="14"
+                height="14"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                strokeWidth="1.5"
+                aria-hidden="true"
+              >
+                <path d="m9 5 7 7-7 7" />
+              </svg>
             </a>
-            <a className="orbit-label orbit-label-security" href="#security">
+            <a
+              className="orbit-label orbit-label-security"
+              href="#security"
+              aria-label="View Cybersecurity skills"
+            >
               <svg
                 width="23"
                 height="26"
@@ -110,6 +138,18 @@ export default function Hero() {
               <span>
                 <small>PROTECT</small>Cybersecurity
               </span>
+              <svg
+                className="orbit-link-arrow"
+                width="14"
+                height="14"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                strokeWidth="1.5"
+                aria-hidden="true"
+              >
+                <path d="m9 5 7 7-7 7" />
+              </svg>
             </a>
             <div className="hero-identity">
               <Image

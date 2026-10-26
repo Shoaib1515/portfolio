@@ -32,9 +32,6 @@ function ProjectCard({ project, index }) {
         </span>
       </div>
       <h3>{project.title}</h3>
-      {project.subtitle && (
-        <p className="project-subtitle">{project.subtitle}</p>
-      )}
       <p className="project-description">{project.description}</p>
       <ul className="tag-list" aria-label="Technologies">
         {project.tags.map((tag) => (
@@ -44,6 +41,9 @@ function ProjectCard({ project, index }) {
       {project.details && (
         <details className="project-details">
           <summary>Inside the project</summary>
+          {project.subtitle && (
+            <p className="project-subtitle">{project.subtitle}</p>
+          )}
           <p>{project.details}</p>
         </details>
       )}

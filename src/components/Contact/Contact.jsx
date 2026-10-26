@@ -95,7 +95,6 @@ export default function Contact() {
             >
               GitHub ↗︎
             </a>
-            <a href={`tel:${SITE.phone}`}>{SITE.phone}</a>
           </div>
           <p className="mono small muted">Based in {SITE.location}</p>
         </div>

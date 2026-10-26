@@ -108,3 +108,23 @@ test("contact validation, delivery, escaping, and burst protection", async (t) =
   assert.equal(failed.status, 502);
   assert.ok(!(await failed.text()).includes("Private SMTP error"));
 });
+
+test("installed mailer composes a replyable message without SMTP", async () => {
+  const transport = nodemailer.createTransport({
+    streamTransport: true,
+    buffer: true,
+  });
+  const result = await transport.sendMail({
+    from: "sender@example.com",
+    to: "owner@example.com",
+    replyTo: "visitor@example.com",
+    subject: "Portfolio Contact: Test visitor",
+    text: "A portfolio enquiry.",
+    html: "<p>&lt;script&gt; stays text.</p>",
+  });
+  const source = result.message.toString();
+  assert.match(source, /^To: owner@example.com$/m);
+  assert.match(source, /^Reply-To: visitor@example.com$/m);
+  assert.match(source, /^Subject: Portfolio Contact: Test visitor$/m);
+  assert.ok(source.includes("&lt;script&gt; stays text."));
+});

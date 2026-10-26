@@ -5,7 +5,11 @@ import { useEffect, useRef, useSyncExternalStore } from "react";
 export default function Cursor() {
   const dotRef = useRef(null);
   const ringRef = useRef(null);
-  const enabled = useSyncExternalStore(subscribe, getSnapshot, getServerSnapshot);
+  const enabled = useSyncExternalStore(
+    subscribe,
+    getSnapshot,
+    getServerSnapshot,
+  );
 
   useEffect(() => {
     if (!enabled) return;
@@ -15,12 +19,14 @@ export default function Cursor() {
       mouseX = 0,
       mouseY = 0;
 
+    let raf = 0;
     function onMove(e) {
       mouseX = e.clientX;
       mouseY = e.clientY;
       if (dotRef.current) {
         dotRef.current.style.transform = `translate(${mouseX}px, ${mouseY}px)`;
       }
+      if (!raf) raf = requestAnimationFrame(animateRing);
     }
 
     function onDown() {
@@ -30,16 +36,16 @@ export default function Cursor() {
       ringRef.current?.classList.remove("cursor-ring-active");
     }
 
-    let raf;
     function animateRing() {
+      raf = 0;
       ringX += (mouseX - ringX) * 0.18;
       ringY += (mouseY - ringY) * 0.18;
       if (ringRef.current) {
         ringRef.current.style.transform = `translate(${ringX}px, ${ringY}px)`;
       }
-      raf = requestAnimationFrame(animateRing);
+      if (Math.abs(mouseX - ringX) + Math.abs(mouseY - ringY) > 0.1)
+        raf = requestAnimationFrame(animateRing);
     }
-    animateRing();
 
     window.addEventListener("mousemove", onMove);
     window.addEventListener("mousedown", onDown);
@@ -88,7 +94,8 @@ export default function Cursor() {
           border: "1px solid var(--border-strong)",
           pointerEvents: "none",
           zIndex: 998,
-          transition: "width .15s ease, height .15s ease, border-color .15s ease",
+          transition:
+            "width .15s ease, height .15s ease, border-color .15s ease",
         }}
       />
       <style jsx global>{`
@@ -105,10 +112,12 @@ export default function Cursor() {
 }
 
 function subscribe(onStoreChange) {
-  if (typeof window === "undefined") return () => { };
+  if (typeof window === "undefined") return () => {};
 
   const finePointerQuery = window.matchMedia("(pointer: fine)");
-  const reducedMotionQuery = window.matchMedia("(prefers-reduced-motion: reduce)");
+  const reducedMotionQuery = window.matchMedia(
+    "(prefers-reduced-motion: reduce)",
+  );
 
   const handleChange = () => onStoreChange();
 

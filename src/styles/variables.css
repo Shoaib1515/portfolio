@@ -16,7 +16,22 @@
   --ai-dim: #2c2145;
   --sec-dim: #3d2b22;
   --error: #ffb4ab;
-  --glass: #101828db;
+  --glass: #101828b8;
+  --glass-tint: #67e8f914;
+  --glass-tint-end: #bca0ff1c;
+  --glass-border: #9dbbea59;
+  --glass-highlight: #e1efff35;
+  --glass-shadow: inset 0 1px 0 var(--glass-highlight), 0 12px 32px #00000026;
+  --glass-surface:
+    linear-gradient(
+      135deg,
+      var(--glass-tint),
+      transparent 48%,
+      var(--glass-tint-end)
+    ),
+    var(--glass);
+  --hero-cyan: #23bddb24;
+  --hero-violet: #8353ff30;
   --wash: #101b33;
   --font-display: var(--font-space-grotesk), sans-serif;
   --font-body: var(--font-inter), sans-serif;
@@ -42,6 +57,24 @@
   --ai-dim: #eee5ff;
   --sec-dim: #fff0dd;
   --error: #a42b26;
-  --glass: #ffffffed;
+  --glass: #ffffffad;
+  --glass-tint: #a4edff24;
+  --glass-tint-end: #c9b2ff26;
+  --glass-border: #93a8d366;
+  --glass-highlight: #ffffffed;
+  --glass-shadow: inset 0 1px 0 var(--glass-highlight), 0 12px 32px #334a7b0d;
+  --hero-cyan: #65dff52b;
+  --hero-violet: #ad86ff29;
   --wash: #e7edff;
+}
+
+@supports not (
+  (backdrop-filter: blur(1px)) or (-webkit-backdrop-filter: blur(1px))
+) {
+  :root {
+    --glass: #111828;
+  }
+  [data-theme="light"] {
+    --glass: #ffffff;
+  }
 }
