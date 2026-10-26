@@ -1,129 +1,149 @@
 "use client";
-
 import { useState } from "react";
-import { motion, AnimatePresence } from "framer-motion";
-import { fadeUp } from "@/hooks/useAnimation";
+import ProjectArtwork from "./ProjectArtwork";
 import { projects } from "@/data/projects";
 import { filterByCategory } from "@/lib/utils";
 
-const FILTERS = [
-  { key: "all", label: "All" },
-  { key: "software", label: "Software Engineering" },
-  { key: "ai", label: "AI" },
-  { key: "security", label: "Cybersecurity" },
+const filters = [
+  { key: "all", label: "All work" },
+  { key: "software", label: "Software" },
+  { key: "ai", label: "Applied AI" },
+  { key: "security", label: "Security" },
 ];
+const labels = {
+  software: "Software engineering",
+  ai: "Applied AI",
+  security: "Cybersecurity",
+};
 
-const ACCENT = { software: "var(--sw)", ai: "var(--ai)", security: "var(--sec)" };
+function ProjectCard({ project, index }) {
+  const links =
+    project.repoUrls ||
+    (project.repoUrl ? [{ label: "View source", url: project.repoUrl }] : []);
+  return (
+    <article className={`project-card project-${project.category}`}>
+      <ProjectArtwork project={project} />
+      <div className="project-card-top">
+        <span className="project-number mono">
+          {String(index + 1).padStart(2, "0")}
+        </span>
+        <span className="project-category mono">
+          {labels[project.category]}
+        </span>
+      </div>
+      <h3>{project.title}</h3>
+      {project.subtitle && (
+        <p className="project-subtitle">{project.subtitle}</p>
+      )}
+      <p className="project-description">{project.description}</p>
+      <ul className="tag-list" aria-label="Technologies">
+        {project.tags.map((tag) => (
+          <li key={tag}>{tag}</li>
+        ))}
+      </ul>
+      {project.details && (
+        <details className="project-details">
+          <summary>Inside the project</summary>
+          <p>{project.details}</p>
+        </details>
+      )}
+      <div className="project-links">
+        {links.length ? (
+          links.map((link) => (
+            <a
+              key={link.url}
+              href={link.url}
+              target="_blank"
+              rel="noopener noreferrer"
+              aria-label={`${link.label}: ${project.title}`}
+            >
+              {link.label} <span aria-hidden="true">↗︎</span>
+            </a>
+          ))
+        ) : (
+          <span className="muted small">Project / lab work</span>
+        )}
+      </div>
+    </article>
+  );
+}
 
 export default function Projects() {
   const [filter, setFilter] = useState("all");
-  const visible = filterByCategory(projects, filter);
-
+  const [expanded, setExpanded] = useState(false);
+  const filtered = filterByCategory(projects, filter);
+  const visible =
+    expanded || filter !== "all"
+      ? filtered
+      : filtered.filter((p) => p.featured);
   return (
-    <section
-      id="projects"
-      className="section"
-      style={{ borderTop: "1px solid var(--border)" }}
-    >
+    <section id="projects" className="section">
       <div className="container">
-        <motion.div
-          variants={fadeUp}
-          initial="hidden"
-          whileInView="show"
-          viewport={{ once: true, amount: 0.3 }}
-          className="max-w-[640px] mb-14"
-        >
-          <div className="eyebrow">
-            <span className="dot sw"></span>
-            <span className="dot ai"></span>
-            <span className="dot sec"></span>Projects
+        <div className="section-heading">
+          <div>
+            <p className="eyebrow">01 / Selected work</p>
+            <h2>
+              Ideas turned into
+              <br />
+              working software.
+            </h2>
           </div>
-          <h2 className="text-[clamp(28px,4vw,38px)] mb-3.5">
-            Everything I&apos;ve built, in one place
-          </h2>
-          <p style={{ color: "var(--text-dim)" }}>
-            Filter by domain to see work from a specific discipline.
+          <p>
+            A selection of applications and security tools.
+            <br />
+            Explore the code, the stack, and the decisions behind them.
           </p>
-        </motion.div>
-
-        <div className="flex flex-wrap gap-2.5 mb-9">
-          {FILTERS.map((f) => (
-            <button
-              key={f.key}
-              type="button"
-              onClick={() => setFilter(f.key)}
-              className="text-[13px] px-4 py-2 rounded-full transition-all"
-              aria-pressed={filter === f.key}
-              style={{
-                fontFamily: "var(--font-mono)",
-                border: `1px solid ${filter === f.key ? "var(--text)" : "var(--border-strong)"}`,
-                background: filter === f.key ? "var(--text)" : "transparent",
-                color: filter === f.key ? "var(--bg)" : "var(--text-dim)",
-              }}
-            >
-              {f.label}
-            </button>
+        </div>
+        <div className="project-toolbar">
+          <div className="filter-list" aria-label="Filter projects">
+            {filters.map((item) => (
+              <button
+                key={item.key}
+                type="button"
+                aria-pressed={filter === item.key}
+                onClick={() => setFilter(item.key)}
+              >
+                {item.label}
+              </button>
+            ))}
+          </div>
+          <p className="mono small muted" role="status">
+            {visible.length} of {projects.length} projects
+          </p>
+        </div>
+        <div id="project-list" className="project-grid">
+          {visible.map((project) => (
+            <ProjectCard
+              key={project.id}
+              project={project}
+              index={projects.indexOf(project)}
+            />
           ))}
         </div>
-
-        <motion.div layout className="grid sm:grid-cols-2 lg:grid-cols-3 gap-5">
-          <AnimatePresence mode="popLayout">
-            {visible.map((p) => (
-              <motion.div
-                layout
-                key={p.id}
-                initial={{ opacity: 0, y: 16 }}
-                animate={{ opacity: 1, y: 0 }}
-                exit={{ opacity: 0, y: -16 }}
-                transition={{ duration: 0.3 }}
-                className="rounded-[14px] p-6 transition-transform hover:-translate-y-1"
-                style={{
-                  background: "var(--bg-elev)",
-                  border: "1px solid var(--border)",
-                  borderTop: `2px solid ${ACCENT[p.category]}`,
-                }}
-              >
-                <span
-                  className="block text-[11px] uppercase tracking-wide mb-2.5"
-                  style={{ fontFamily: "var(--font-mono)", color: ACCENT[p.category] }}
-                >
-                  {p.category}
-                </span>
-                <h4 className="text-[16.5px] mb-2">{p.title}</h4>
-                <p className="text-[13.5px]" style={{ color: "var(--text-dim)" }}>
-                  {p.description}
-                </p>
-                {(p.repoUrl || p.repoUrls) && (
-                  <div className="flex flex-wrap gap-3 mt-3">
-                    {p.repoUrl && (
-                      <a
-                        href={p.repoUrl}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        className="text-xs underline underline-offset-2"
-                        style={{ fontFamily: "var(--font-mono)", color: "var(--text-dim)" }}
-                      >
-                        View on GitHub →
-                      </a>
-                    )}
-                    {p.repoUrls?.map((r) => (
-                      <a
-                        key={r.url}
-                        href={r.url}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        className="text-xs underline underline-offset-2"
-                        style={{ fontFamily: "var(--font-mono)", color: "var(--text-dim)" }}
-                      >
-                        {r.label} →
-                      </a>
-                    ))}
-                  </div>
-                )}
-              </motion.div>
-            ))}
-          </AnimatePresence>
-        </motion.div>
+        {filter === "all" && (
+          <div className="projects-more">
+            <button
+              type="button"
+              className="btn btn-ghost"
+              aria-expanded={expanded}
+              aria-controls="project-list"
+              onClick={() => setExpanded(!expanded)}
+            >
+              {expanded
+                ? "Show selected work"
+                : `Explore all ${projects.length} projects`}{" "}
+              <span aria-hidden="true">{expanded ? "−" : "+"}</span>
+            </button>
+            <a
+              href="https://github.com/Shoaib1515"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="text-link"
+            >
+              More on GitHub ↗︎
+            </a>
+          </div>
+        )}
       </div>
     </section>
   );

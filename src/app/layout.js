@@ -2,10 +2,12 @@ import "./globals.css";
 import { Inter, JetBrains_Mono, Space_Grotesk } from "next/font/google";
 import Navbar from "@/components/Navbar/Navbar";
 import Footer from "@/components/Footer/Footer";
-import Cursor from "@/components/Cursor/Cursor";
 import ScrollProgress from "@/components/ScrollProgress/ScrollProgress";
+import Cursor from "@/components/Cursor/Cursor";
 
-const siteUrl = "https://portfolio-pi-ivory-95.vercel.app";
+import { SITE } from "@/lib/constants";
+
+const siteUrl = SITE.url;
 
 const spaceGrotesk = Space_Grotesk({
   subsets: ["latin"],
@@ -51,7 +53,7 @@ export const metadata = {
     type: "website",
   },
   twitter: {
-    card: "summary",
+    card: "summary_large_image",
     title: "Muhammad Shoaib Asghar — Software · AI · Security",
     description:
       "Portfolio of Muhammad Shoaib Asghar — practical software, AI, and cybersecurity work.",
@@ -60,8 +62,18 @@ export const metadata = {
 
 export default function RootLayout({ children }) {
   return (
-    <html lang="en" data-theme="dark">
-      <body className={`${spaceGrotesk.variable} ${inter.variable} ${jetBrainsMono.variable}`}>
+    <html lang="en" data-theme="dark" suppressHydrationWarning>
+      <body
+        className={`${spaceGrotesk.variable} ${inter.variable} ${jetBrainsMono.variable}`}
+      >
+        <script
+          dangerouslySetInnerHTML={{
+            __html: `try{document.documentElement.dataset.theme=localStorage.getItem('portfolio-theme')==='light'?'light':'dark'}catch{}`,
+          }}
+        />
+        <a href="#main-content" className="skip-link">
+          Skip to content
+        </a>
         <ScrollProgress />
         <Cursor />
         <Navbar />

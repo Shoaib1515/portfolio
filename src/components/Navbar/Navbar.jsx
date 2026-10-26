@@ -1,83 +1,93 @@
 "use client";
 
-import Image from "next/image";
-import { useEffect, useState } from "react";
-import { NAV_LINKS, SITE } from "@/lib/constants";
+import { useEffect, useRef, useState } from "react";
+import { NAV_LINKS } from "@/lib/constants";
 import { useActiveSection } from "@/hooks/useScroll";
 import ThemeToggle from "@/components/ThemeToggle/ThemeToggle";
 import "./Navbar.css";
 
+const sectionIds = NAV_LINKS.map((link) => link.href.slice(1));
 export default function Navbar() {
   const [open, setOpen] = useState(false);
-  const active = useActiveSection(NAV_LINKS.map((l) => l.href.replace("#", "")));
-
+  const menuButton = useRef(null);
+  const active = useActiveSection(sectionIds);
   useEffect(() => {
-    return () => {
-      if (typeof document !== "undefined") {
-        document.body.classList.remove("menu-open");
+    function onKey(event) {
+      if (event.key === "Escape" && open) {
+        setOpen(false);
+        menuButton.current?.focus();
       }
-    };
-  }, []);
-
-  function setMenu(next) {
-    setOpen(next);
-    if (typeof document !== "undefined") {
-      document.body.classList.toggle("menu-open", next);
     }
-  }
-
+    const desktop = window.matchMedia("(min-width: 761px)");
+    const onResize = () => {
+      if (desktop.matches) setOpen(false);
+    };
+    document.addEventListener("keydown", onKey);
+    desktop.addEventListener("change", onResize);
+    return () => {
+      document.removeEventListener("keydown", onKey);
+      desktop.removeEventListener("change", onResize);
+    };
+  }, [open]);
   return (
     <header className="navbar-header">
-      <nav className="navbar-nav" aria-label="Primary navigation">
-        <a href="#home" className="navbar-brand">
-          <Image
-            src="/images/profile.webp"
-            alt={SITE.name}
-            width={36}
-            height={36}
-            className="navbar-avatar"
-            priority
-          />
-          <span className="navbar-brand-name">M. Shoaib Asghar</span>
+      <nav
+        className="navbar-nav"
+        aria-label="Primary navigation"
+        onBlur={(event) => {
+          if (!event.currentTarget.contains(event.relatedTarget))
+            setOpen(false);
+        }}
+      >
+        <a
+          href="#home"
+          className="navbar-brand"
+          onClick={() => setOpen(false)}
+          aria-label="Shoaib Asghar, home"
+        >
+          <span className="brand-mark" aria-hidden="true">
+            sa.
+          </span>
+          <span>
+            Shoaib Asghar<span className="brand-period">.</span>
+          </span>
         </a>
-
-        <ul id="site-navigation" className={`navbar-links ${open ? "open" : ""}`}>
+        <div className="navbar-right">
+          <ThemeToggle />
+          <a href="#contact" className="navbar-cta">
+            Let’s talk <span aria-hidden="true">↗︎</span>
+          </a>
+          <button
+            ref={menuButton}
+            type="button"
+            className="menu-btn"
+            aria-label={open ? "Close menu" : "Open menu"}
+            aria-controls="site-navigation"
+            aria-expanded={open}
+            onClick={() => setOpen(!open)}
+          >
+            <span aria-hidden="true">{open ? "×" : "☰"}</span>
+          </button>
+        </div>
+        <ul
+          id="site-navigation"
+          className={`navbar-links ${open ? "open" : ""}`}
+        >
           {NAV_LINKS.map((link) => (
             <li key={link.href}>
               <a
                 href={link.href}
-                className={active === link.href.replace("#", "") ? "active" : ""}
-                onClick={() => setMenu(false)}
+                aria-current={
+                  active === link.href.slice(1) ? "location" : undefined
+                }
+                onClick={() => setOpen(false)}
               >
                 {link.label}
               </a>
             </li>
           ))}
         </ul>
-
-        <div className="navbar-right">
-          <ThemeToggle />
-          <a href="#contact" className="navbar-cta">
-            Let&apos;s talk
-          </a>
-          <button
-            type="button"
-            className={`menu-btn ${open ? "open" : ""}`}
-            aria-label="Toggle menu"
-            aria-controls="site-navigation"
-            aria-expanded={open}
-            onClick={() => setMenu(!open)}
-          >
-            <span className="bar"></span>
-            <span className="bar"></span>
-            <span className="bar"></span>
-          </button>
-        </div>
       </nav>
-      <div
-        className={`nav-backdrop ${open ? "open" : ""}`}
-        onClick={() => setMenu(false)}
-      ></div>
     </header>
   );
 }

@@ -1,167 +1,190 @@
 "use client";
-
-import { useState } from "react";
-import { motion } from "framer-motion";
-import { fadeUp } from "@/hooks/useAnimation";
+import { useRef, useState, useSyncExternalStore } from "react";
 import { SITE } from "@/lib/constants";
 
+const subscribe = () => () => {};
+const clientReady = () => true;
+const serverReady = () => false;
+
 export default function Contact() {
+  const ready = useSyncExternalStore(subscribe, clientReady, serverReady);
   const [status, setStatus] = useState("idle");
-  const [errorMessage, setErrorMessage] = useState("");
-
-  async function handleSubmit(e) {
-    e.preventDefault();
-    const form = e.currentTarget;
-    const formData = new FormData(form);
-    const payload = {
-      name: formData.get("name")?.toString().trim(),
-      email: formData.get("email")?.toString().trim(),
-      message: formData.get("message")?.toString().trim(),
-    };
-
+  const [message, setMessage] = useState("");
+  const sending = useRef(false);
+  async function handleSubmit(event) {
+    event.preventDefault();
+    if (sending.current) return;
+    const form = event.currentTarget;
+    const data = new FormData(form);
+    const payload = Object.fromEntries(
+      ["name", "email", "message", "website"].map((key) => [
+        key,
+        String(data.get(key) || "").trim(),
+      ]),
+    );
+    if (!payload.name || !payload.email || !payload.message) {
+      setStatus("error");
+      setMessage("Please complete all fields. Spaces alone are not enough.");
+      return;
+    }
+    sending.current = true;
     setStatus("sending");
-    setErrorMessage("");
+    setMessage("Sending your message…");
     try {
-      const res = await fetch("/api/contact", {
+      const response = await fetch("/api/contact", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(payload),
+        signal: AbortSignal.timeout(25000),
       });
-
-      if (!res.ok) {
-        const data = await res.json().catch(() => ({}));
-        setErrorMessage(data?.error || "Could not send message right now. Please try again in a moment.");
-        setStatus("error");
-        return;
-      }
-
+      const result = await response.json();
+      if (!response.ok || result.ok !== true)
+        throw new Error(
+          result.error ||
+            "Your message could not be sent. Please email me directly.",
+        );
       form.reset();
       setStatus("sent");
-    } catch {
-      setErrorMessage("Could not send message right now. Please try again in a moment.");
+      setMessage("Thanks for reaching out. Your message has been sent.");
+    } catch (error) {
       setStatus("error");
+      setMessage(
+        error.name === "TimeoutError"
+          ? "Delivery could not be confirmed. Please email me directly if you need to follow up."
+          : error.message === "Failed to fetch"
+            ? "Unable to connect. Please try again or email me directly."
+            : error.message ||
+              "Something went wrong. Please email me directly.",
+      );
+    } finally {
+      sending.current = false;
     }
   }
-
   return (
-    <section id="contact" className="section" style={{ borderTop: "1px solid var(--border)" }}>
-      <div className="container grid md:grid-cols-[0.9fr_1.1fr] gap-14">
-        <motion.div
-          variants={fadeUp}
-          initial="hidden"
-          whileInView="show"
-          viewport={{ once: true, amount: 0.3 }}
-        >
-          <div className="eyebrow">
-            <span className="dot ai"></span>Contact
-          </div>
-          <h2 className="text-[clamp(26px,4vw,34px)] mb-3.5">Let&apos;s work together</h2>
-          <p className="mb-6" style={{ color: "var(--text-dim)" }}>
-            Open to software, AI, and security-related work freelance,
-            full-time, or collaboration. Reach out directly or use the form.
+    <section id="contact" className="section section-tinted">
+      <div className="container contact-grid">
+        <div className="contact-copy">
+          <p className="eyebrow">04 / Get in touch</p>
+          <h2>
+            Have something
+            <br />
+            in mind?
+            <br />
+            <span style={{ color: "var(--accent)" }}>Let’s build it.</span>
+          </h2>
+          <p className="muted">
+            Open to software engineering opportunities, security-focused
+            projects, and collaborations. Tell me a little about what you’re
+            working on.
           </p>
-          <div className="flex flex-col gap-4">
-            <a href={`mailto:${SITE.email}`} className="flex items-center gap-3 text-sm" style={{ color: "var(--text-dim)" }}>
-              <IconBadge>@</IconBadge> {SITE.email}
-            </a>
-            <a href={`tel:${SITE.phone.replace(/\s+/g, "")}`} className="flex items-center gap-3 text-sm" style={{ color: "var(--text-dim)" }}>
-              <IconBadge>#</IconBadge> {SITE.phone}
-            </a>
-            <span className="flex items-center gap-3 text-sm" style={{ color: "var(--text-dim)" }}>
-              <IconBadge>📍</IconBadge> {SITE.location}
-            </span>
-            <a href={SITE.socials.linkedin} target="_blank" rel="noopener noreferrer" className="flex items-center gap-3 text-sm" style={{ color: "var(--text-dim)" }}>
-              <IconBadge>in</IconBadge> LinkedIn
-            </a>
-            <a href={SITE.socials.github} target="_blank" rel="noopener noreferrer" className="flex items-center gap-3 text-sm" style={{ color: "var(--text-dim)" }}>
-              <IconBadge>gh</IconBadge> GitHub
-            </a>
-          </div>
-        </motion.div>
-
-        <motion.form
-          variants={fadeUp}
-          initial="hidden"
-          whileInView="show"
-          viewport={{ once: true, amount: 0.3 }}
-          onSubmit={handleSubmit}
-          className="flex flex-col gap-4"
-        >
-          <Field label="Name" name="name" type="text" placeholder="Your name" />
-          <Field label="Email" name="email" type="email" placeholder="you@example.com" />
-          <div className="flex flex-col gap-1.5">
-            <label
-              className="text-xs uppercase tracking-wide"
-              style={{ fontFamily: "var(--font-mono)", color: "var(--text-faint)" }}
+          <a className="contact-email" href={`mailto:${SITE.email}`}>
+            {SITE.email}
+          </a>
+          <div className="contact-links">
+            <a
+              href={SITE.socials.linkedin}
+              target="_blank"
+              rel="noopener noreferrer"
             >
-              Message
+              LinkedIn ↗︎
+            </a>
+            <a
+              href={SITE.socials.github}
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              GitHub ↗︎
+            </a>
+            <a href={`tel:${SITE.phone}`}>{SITE.phone}</a>
+          </div>
+          <p className="mono small muted">Based in {SITE.location}</p>
+        </div>
+        <form
+          className="contact-form"
+          method="post"
+          action="/api/contact"
+          onSubmit={handleSubmit}
+          aria-busy={status === "sending"}
+        >
+          <div className="contact-field">
+            <label htmlFor="contact-name">Your name</label>
+            <input
+              id="contact-name"
+              name="name"
+              required
+              disabled={!ready || status === "sending"}
+              maxLength={100}
+              autoComplete="name"
+              placeholder="How should I address you?"
+            />
+          </div>
+          <div className="contact-field">
+            <label htmlFor="contact-email">Email address</label>
+            <input
+              id="contact-email"
+              name="email"
+              type="email"
+              required
+              disabled={!ready || status === "sending"}
+              maxLength={254}
+              autoComplete="email"
+              placeholder="you@company.com"
+            />
+          </div>
+          <div className="contact-field">
+            <label htmlFor="contact-message">
+              What would you like to work on?
             </label>
             <textarea
+              id="contact-message"
               name="message"
               required
-              placeholder="What would you like to talk about?"
+              disabled={!ready || status === "sending"}
+              maxLength={5000}
               rows={5}
-              className="rounded-[10px] px-4 py-3.5 text-[14.5px]"
-              style={{ background: "var(--bg-elev)", border: "1px solid var(--border-strong)", color: "var(--text)" }}
+              placeholder="A role, an idea, or a project. I’d love to hear about it."
+            />
+          </div>
+          <div className="honeypot" aria-hidden="true">
+            <label htmlFor="contact-website">Leave this field empty</label>
+            <input
+              id="contact-website"
+              name="website"
+              tabIndex={-1}
+              autoComplete="off"
             />
           </div>
           <button
+            className="btn btn-primary"
             type="submit"
-            disabled={status === "sending"}
-            className="self-start px-[22px] py-3.5 rounded-[10px] font-semibold text-[14.5px]"
-            style={{
-              background: "linear-gradient(100deg, var(--sw), var(--ai) 60%, var(--sec))",
-              color: "#0b0e13",
-              opacity: status === "sending" ? 0.75 : 1,
-            }}
+            disabled={!ready || status === "sending"}
           >
-            {status === "sending"
-              ? "Sending..."
-              : status === "sent"
-                ? "Message sent ✓"
-                : "Send Message"}
+            {status === "sending" ? "Sending…" : "Send message"}
+            <span aria-hidden="true">↗︎</span>
           </button>
-          {status === "error" && (
-            <p className="text-sm" style={{ color: "#fca5a5" }}>
-              {errorMessage}
+          <noscript>
+            <p className="small muted">
+              Please use the email link to get in touch. The form requires
+              JavaScript.
             </p>
-          )}
-        </motion.form>
+          </noscript>
+          <p
+            className={`form-status ${status === "error" ? "error" : ""}`}
+            role="status"
+            aria-live="polite"
+            aria-atomic="true"
+          >
+            {message}
+          </p>
+          <p className="small muted">
+            Your name, email, and message are used to respond to your enquiry.
+            Prefer email?{" "}
+            <a className="underline" href={`mailto:${SITE.email}`}>
+              Contact me directly.
+            </a>
+          </p>
+        </form>
       </div>
     </section>
-  );
-}
-
-function Field({ label, name, type, placeholder }) {
-  return (
-    <div className="flex flex-col gap-1.5">
-      <label
-        htmlFor={name}
-        className="text-xs uppercase tracking-wide"
-        style={{ fontFamily: "var(--font-mono)", color: "var(--text-faint)" }}
-      >
-        {label}
-      </label>
-      <input
-        id={name}
-        name={name}
-        type={type}
-        required
-        placeholder={placeholder}
-        className="rounded-[10px] px-4 py-3.5 text-[14.5px]"
-        style={{ background: "var(--bg-elev)", border: "1px solid var(--border-strong)", color: "var(--text)" }}
-      />
-    </div>
-  );
-}
-
-function IconBadge({ children }) {
-  return (
-    <span
-      className="w-9 h-9 rounded-[9px] flex items-center justify-center shrink-0 text-xs"
-      style={{ background: "var(--bg-elev)", border: "1px solid var(--border)" }}
-    >
-      {children}
-    </span>
   );
 }
